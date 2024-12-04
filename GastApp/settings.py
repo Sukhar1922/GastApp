@@ -78,7 +78,7 @@ WSGI_APPLICATION = 'GastApp.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'mssql',
-        'NAME': 'Gastarbaiters',
+        'NAME': 'Gastarbiters',
         'USER': '',
         'PASSWORD': '',
         'HOST': 'localhost',
