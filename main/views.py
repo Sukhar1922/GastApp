@@ -55,8 +55,8 @@ def index(req):
 
 
 def testPage(request):
-
-    form = generateForm('tools')
+    table = 'gastarbiters'
+    form = generateForm(table)
     if request.method == "POST":
         # print(request.POST)
         keys = []
@@ -64,11 +64,16 @@ def testPage(request):
         for key, value in request.POST.items():
             if key == 'csrfmiddlewaretoken':
                 continue
+
+            if value == '':
+                values.append('NULL')
+            else:
+                values.append(f"\'{value}\'")
+
             keys.append(key)
-            values.append(f"\'{value}\'")
         # print(', '.join(keys))
         with connection.cursor() as cursor:
-            query = f'INSERT INTO tools ({", ".join(keys)}) VALUES ({", ".join(values)})'
+            query = f'INSERT INTO {table} ({", ".join(keys)}) VALUES ({", ".join(values)})'
             print(query)
             cursor.execute(query)
         return render(request, 'main/test.html', {'form': mark_safe(form)})
