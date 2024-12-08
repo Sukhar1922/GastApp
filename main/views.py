@@ -1,6 +1,8 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 
+TABELS = []
+
 # Create your views here.
 
 def index(req):
