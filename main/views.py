@@ -4,7 +4,7 @@ from django.http import HttpResponse
 # Create your views here.
 
 def index(req):
-    return HttpResponse('<h1>Пиривет! У нас Периф</h1>')
+    return render(req, 'main/index.html')
 
 def testPage(req):
     return HttpResponse('<h1>Пиривет! У нас Периф И теста</h1>')
