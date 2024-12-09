@@ -1,0 +1,15 @@
+{% extends 'main/layout.html' %}
+
+{% block title %} ПРИВЕТ! {% endblock %}
+
+{% block content %}
+    <p>ПРИВЕТ!!</p>
+{% endblock %}
+
+{% block form %}
+    <form method="post">
+        {% csrf_token %}
+        {{ form }}
+        <button type="submit">Добавить</button>
+    </form>
+{% endblock %}
