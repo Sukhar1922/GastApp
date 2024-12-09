@@ -81,6 +81,15 @@ def testPage(request):
         return render(request, 'main/test.html', {'form': mark_safe(form)})
     return render(request, 'main/test.html', {'form': mark_safe(form)})
 
+
+def viewPage(request):
+    return render(request, 'main/view.html')
+
+
+def changePage(request):
+    return render(request, 'main/change.html')
+
+
 def addPage(request):
     table = 'gastarbiters'
     form = generateForm(table)
@@ -105,3 +114,7 @@ def addPage(request):
             cursor.execute(query)
         return render(request, 'main/add.html', {'form': mark_safe(form)})
     return render(request, 'main/add.html', {'form': mark_safe(form)})
+
+
+def deletePage(request):
+    return render(request, 'main/delete.html')
