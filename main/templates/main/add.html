@@ -7,9 +7,12 @@
 {% endblock %}
 
 {% block form %}
-    <form method="post">
-        {% csrf_token %}
-        {{ form }}
-        <button type="submit">Добавить</button>
+    <form class="form-container" method="post">
+        <p class="form-header">Добавить</p>
+        <div class="form-fields">
+            {% csrf_token %}
+            {{ form }}
+        </div>
+        <button class="form-button" type="submit">Добавить</button>
     </form>
 {% endblock %}

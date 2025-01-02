@@ -81,3 +81,70 @@ header {
     padding: 20px;
     overflow-y: auto;
 }
+
+
+/* Контейнер формы */
+.form-container {
+    background-color: #e4e9d4; /* Цвет, как на картинке */
+    border: 1px solid #ccc; /* Граница для формы */
+    width: 300px; /* Ширина формы */
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden; /* Для фиксации заголовка и кнопки */
+}
+
+/* Заголовок */
+.form-header {
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 10px;
+    position: sticky; /* Фиксация заголовка */
+    top: 0;
+    background-color: #e4e9d4;
+    z-index: 10;
+}
+
+/* Прокручиваемая область */
+.form-fields {
+    flex-grow: 1;
+    overflow-y: auto; /* Прокрутка для полей */
+    max-height: 200px; /* Ограничение высоты */
+    margin-bottom: 10px;
+}
+
+/* Поля ввода */
+.form-fields p {
+    display: flex;
+    flex-direction: column;
+    margin: 10px 0;
+}
+
+.form-fields label {
+    margin-bottom: 5px;
+    font-size: 14px;
+}
+
+.form-fields input[type="text"] {
+    padding: 5px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+}
+
+/* Кнопка */
+.form-button {
+    margin-top: 10px;
+    padding: 10px;
+    font-size: 16px;
+    background-color: #dce3d5;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+}
+
+.form-button:hover {
+    background-color: #c5ceb8;
+}
