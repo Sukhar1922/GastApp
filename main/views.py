@@ -4,6 +4,18 @@ from django import forms
 from django.db import connection
 from django.utils.safestring import mark_safe
 
+dictLabels = {
+    'f_name' : 'Фамилия',
+    'i_name' : 'Имя',
+    'o_name' : 'Отчество',
+    'pasport_ser' : 'Серия паспорта',
+    'pasport_num' : 'Номер серии',
+    'salary' : 'Зарплата',
+    'id_workplace' : 'id рабочего места',
+    'id_apartment' : 'id квартиры проживания'
+}
+
+
 class SimpleForm(forms.Form):
     name = forms.CharField(label='Имя', max_length=100)
     age = forms.IntegerField(label='Возраст', min_value=0)
@@ -25,9 +37,13 @@ def generateForm(table_name):
     for key, type, length in columns:
         if key == 'id':
             continue
+        if key in dictLabels:
+            tittle = dictLabels[key]
+        else:
+            tittle = key
         # print(key)
         column = f'''
-            <p><label for=\"{key}\">{key}</label>
+            <p><label for=\"{key}\">{tittle}</label>
             <input type=\"text\" name=\"{key}\" maxlength=\"{length}\"></p>
         '''
         form += column
