@@ -62,16 +62,18 @@ header {
     margin: 0;
 }
 
-.sidebar-list li {
+.sidebar-list li button {
     background-color: #d3d8c2;
     margin: 5px 0;
     padding: 10px;
     cursor: pointer;
     text-align: center;
     border: 1px solid #bbb;
+    width: 100%;
+    font-size: 16px;
 }
 
-.sidebar-list li:hover {
+.sidebar-list li button:hover {
     background-color: #c5ceb8;
 }
 

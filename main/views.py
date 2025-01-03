@@ -39,7 +39,7 @@ def generateTableList():
             title = dictTables[table]
         else:
             title = table
-        string = f'<li>{title}</li>'
+        string = f'<li><button onclick=loadForm(\'{table}\')>{title}</button></li>'
         tableList += string
     return tableList
 
@@ -129,7 +129,7 @@ def addPage(request):
     table = 'gastarbiters'
     form = generateForm(table)
     tableList = generateTableList() # !!!ВКЛЮЧИТЬ
-    print(f'EFFF{tableList}')
+    # print(f'EFFF{tableList}')
     renderPage = render(request, 'main/add.html', {'form': mark_safe(form), 'tablelistGen': mark_safe(tableList)})
     if request.method == "POST":
         # print(request.POST)
