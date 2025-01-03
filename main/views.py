@@ -4,6 +4,15 @@ from django import forms
 from django.db import connection
 from django.utils.safestring import mark_safe
 
+dictTables = {
+    'apartments' : 'Жильё',
+    'gastarbiters' : 'Гастарбайтеры',
+    'Gas_Tools' : 'Гастарбайтеры-инструменты',
+    'ownes' : 'Хозяева квартир',
+    'tools' : 'Инструменты',
+    'workplaces' : 'Калым'
+}
+
 dictLabels = {
     'f_name' : 'Фамилия',
     'i_name' : 'Имя',
@@ -21,6 +30,18 @@ class SimpleForm(forms.Form):
     age = forms.IntegerField(label='Возраст', min_value=0)
     email = forms.EmailField(label='Электронная почта')
     birth_date = forms.DateField(label='Дата рождения', widget=forms.DateInput(attrs={'type': 'date'}))
+
+
+def generateTableList():
+    tableList = ''
+    for table in dictTables:
+        if dictTables[table] != '':
+            title = dictTables[table]
+        else:
+            title = table
+        string = f'<li>{title}</li>'
+        tableList += string
+    return tableList
 
 
 def generateForm(table_name):
@@ -50,8 +71,6 @@ def generateForm(table_name):
     # print(columns)
     return mark_safe(form)
 
-
-TABELS = []
 
 # Create your views here.
 
@@ -109,6 +128,9 @@ def changePage(request):
 def addPage(request):
     table = 'gastarbiters'
     form = generateForm(table)
+    tableList = generateTableList() # !!!ВКЛЮЧИТЬ
+    print(f'EFFF{tableList}')
+    renderPage = render(request, 'main/add.html', {'form': mark_safe(form), 'tablelistGen': mark_safe(tableList)})
     if request.method == "POST":
         # print(request.POST)
         keys = []
@@ -128,8 +150,8 @@ def addPage(request):
             query = f'INSERT INTO {table} ({", ".join(keys)}) VALUES ({", ".join(values)})'
             print(query)
             cursor.execute(query)
-        return render(request, 'main/add.html', {'form': mark_safe(form)})
-    return render(request, 'main/add.html', {'form': mark_safe(form)})
+        return renderPage
+    return renderPage
 
 
 def deletePage(request):
