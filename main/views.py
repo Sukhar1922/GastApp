@@ -65,16 +65,14 @@ def generateForm(table_name):
         if key == 'id':
             continue
         if key in dictLabels:
-            tittle = dictLabels[key]
+            title = dictLabels[key]
         else:
-            tittle = key
-        # print(key)
+            title = key
         column = f'''
-            <p><label for=\"{key}\">{tittle}</label>
+            <p><label for=\"{key}\">{title}</label>
             <input type=\"text\" name=\"{key}\" maxlength=\"{length}\"></p>
         '''
         form += column
-    # print(columns)
     return mark_safe(form)
 
 
@@ -83,25 +81,10 @@ def generateForm(table_name):
 def index(req):
     return render(req, 'main/index.html')
 
-# def testPage(request):
-#     # return render(req, 'main/test.html')
-#     form = SimpleForm()  # Создаём объект формы
-#     if request.method == 'POST':
-#         form = SimpleForm(request.POST)
-#         if form.is_valid():
-#             # Обрабатываем данные из формы
-#             cleaned_data = form.cleaned_data
-#             print(cleaned_data)  # Для примера, выводим данные в консоль
-#             return render(request, 'main/test.html', {'form': form})  # Перенаправляем на страницу успеха
-#
-#     return render(request, 'main/test.html', {'form': form})
-
-
 def testPage(request):
-    table = 'gastarbiters'
+    table = ''
     form = generateForm(table)
     if request.method == "POST":
-        # print(request.POST)
         keys = []
         values = []
         for key, value in request.POST.items():
@@ -114,7 +97,6 @@ def testPage(request):
                 values.append(f"\'{value}\'")
 
             keys.append(key)
-        # print(', '.join(keys))
         with connection.cursor() as cursor:
             query = f'INSERT INTO {table} ({", ".join(keys)}) VALUES ({", ".join(values)})'
             print(query)
@@ -132,13 +114,13 @@ def changePage(request):
 
 
 def addPage(request):
-    table = 'gastarbiters'
+    table = ''
 
     if request.method == "GET":
         table = GETTable(request)
 
     form = generateForm(table)
-    tableList = generateTableList() # !!!ВКЛЮЧИТЬ
+    tableList = generateTableList()
     renderPage = render(request, 'main/add.html', {'form': mark_safe(form), 'tablelistGen': mark_safe(tableList)})
 
 
@@ -146,6 +128,8 @@ def addPage(request):
         keys = []
         values = []
         for key, value in request.POST.items():
+            if table == '': # exit
+                return renderPage
             if key == 'csrfmiddlewaretoken':
                 continue
 
@@ -155,7 +139,6 @@ def addPage(request):
                 values.append(f"\'{value}\'")
 
             keys.append(key)
-        # print(', '.join(keys))
         with connection.cursor() as cursor:
             query = f'INSERT INTO {table} ({", ".join(keys)}) VALUES ({", ".join(values)})'
             print(query)
