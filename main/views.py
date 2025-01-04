@@ -8,7 +8,7 @@ dictTables = {
     'apartments' : 'Жильё',
     'gastarbiters' : 'Гастарбайтеры',
     'Gas_Tools' : 'Гастарбайтеры-инструменты',
-    'ownes' : 'Хозяева квартир',
+    'owners' : 'Хозяева квартир',
     'tools' : 'Инструменты',
     'workplaces' : 'Калым'
 }
@@ -32,6 +32,12 @@ class SimpleForm(forms.Form):
     birth_date = forms.DateField(label='Дата рождения', widget=forms.DateInput(attrs={'type': 'date'}))
 
 
+def GETTable(request):
+    table_name = request.GET.get('table')
+    print(f'table: {table_name}')
+    return table_name
+
+
 def generateTableList():
     tableList = ''
     for table in dictTables:
@@ -39,7 +45,7 @@ def generateTableList():
             title = dictTables[table]
         else:
             title = table
-        string = f'<li><button onclick=loadForm(\'{table}\')>{title}</button></li>'
+        string = f'<li><a href="?table={table}"><button>{title}</button></a></li>'
         tableList += string
     return tableList
 
@@ -127,12 +133,16 @@ def changePage(request):
 
 def addPage(request):
     table = 'gastarbiters'
+
+    if request.method == "GET":
+        table = GETTable(request)
+
     form = generateForm(table)
     tableList = generateTableList() # !!!ВКЛЮЧИТЬ
-    # print(f'EFFF{tableList}')
     renderPage = render(request, 'main/add.html', {'form': mark_safe(form), 'tablelistGen': mark_safe(tableList)})
+
+
     if request.method == "POST":
-        # print(request.POST)
         keys = []
         values = []
         for key, value in request.POST.items():
