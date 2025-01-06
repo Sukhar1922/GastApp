@@ -1,7 +1,12 @@
 {% extends 'main/layout.html' %}
 
-{% block title %} ПРИВЕТ! {% endblock %}
+{% block title %} Просмотр таблиц {% endblock %}
 
 {% block content %}
     <p>Просмотр</p>
+    {{ table }}
 {% endblock %}
+
+{% block tablelist %}
+    {{ tablelistGen }}
+{% endblock%}

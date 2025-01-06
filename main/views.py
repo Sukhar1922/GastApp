@@ -61,6 +61,8 @@ def generateForm(table_name):
         cursor.execute(query)
         columns = cursor.fetchall()
 
+    form += f'<input type=\"hidden\" name=\"table\" value=\"{table_name}\">'
+
     for key, type, length in columns:
         if key == 'id':
             continue
@@ -75,6 +77,18 @@ def generateForm(table_name):
         form += column
     return mark_safe(form)
 
+
+def generateHTMLTable(table_name):
+    with connection.cursor() as cursor:
+        query = f"""
+        SELECT *
+        FROM {table_name}
+        """
+        cursor.execute(query)
+        columns = cursor.fetchall()
+        print(columns)
+
+    return 0
 
 # Create your views here.
 
@@ -106,7 +120,18 @@ def testPage(request):
 
 
 def viewPage(request):
-    return render(request, 'main/view.html')
+    table = ''
+
+    if request.method == "GET":
+        table = GETTable(request)
+
+    if table != None:
+        HTMLTable = generateHTMLTable(table)
+    tableList = generateTableList()
+    renderPage = render(request, 'main/view.html', {'tablelistGen': mark_safe(tableList)})
+
+
+    return renderPage
 
 
 def changePage(request):
@@ -128,8 +153,12 @@ def addPage(request):
         keys = []
         values = []
         for key, value in request.POST.items():
-            if table == '': # exit
-                return renderPage
+            if key == 'table':
+                table = value
+                continue
+            # if table == '': # exit
+            #     print(f'table {table} g')
+            #     return renderPage
             if key == 'csrfmiddlewaretoken':
                 continue
 
