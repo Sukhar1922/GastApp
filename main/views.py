@@ -79,16 +79,36 @@ def generateForm(table_name):
 
 
 def generateHTMLTable(table_name):
+    table = ""
+    with connection.cursor() as cursor:
+        query = f"""
+            SELECT COLUMN_NAME
+            FROM INFORMATION_SCHEMA.COLUMNS
+            WHERE TABLE_NAME = '{table_name}'
+            """
+        cursor.execute(query)
+        columns = cursor.fetchall()
+    table = '<tr>'
+    for column in columns:
+        table += f'<td>{column[0]}</td>'
+    table += '</tr>'
+    print(table)
     with connection.cursor() as cursor:
         query = f"""
         SELECT *
         FROM {table_name}
         """
         cursor.execute(query)
-        columns = cursor.fetchall()
-        print(columns)
+        rows = cursor.fetchall()
 
-    return 0
+    for row in rows:
+        HTMLRow = '<tr>'
+        for column in row:
+            table += f'<td>{column}</td>'
+        HTMLRow += '</tr>'
+        table += HTMLRow
+
+    return table
 
 # Create your views here.
 
@@ -121,14 +141,16 @@ def testPage(request):
 
 def viewPage(request):
     table = ''
+    HTMLTable = ''
 
     if request.method == "GET":
         table = GETTable(request)
+        print(f'_{table}_')
+        if table is not None:
+            HTMLTable = generateHTMLTable(table)
 
-    if table != None:
-        HTMLTable = generateHTMLTable(table)
     tableList = generateTableList()
-    renderPage = render(request, 'main/view.html', {'tablelistGen': mark_safe(tableList)})
+    renderPage = render(request, 'main/view.html', {'tablelistGen': mark_safe(tableList), 'table': mark_safe(HTMLTable)})
 
 
     return renderPage
