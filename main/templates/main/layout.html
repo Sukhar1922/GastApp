@@ -44,14 +44,21 @@
     </div>
 </body>
 <script>
-function loadForm(tableName) {
-//    fetch(`/get-form?table=${tableName}`)
-//        .then(response => response.text())
-//        .then(html => {
-//            document.getElementById('form-container').innerHTML = html;
-//        })
-//        .catch(error => console.error('Ошибка:', error));
-    console.log(tableName)
-}
+    const rows = document.querySelectorAll('table tbody tr');
+
+    // Добавляем обработчик события "клик" на каждую строку
+    rows.forEach(row => {
+        row.addEventListener('click', function () {
+            // Получаем ID строки из атрибута data-id
+            const rowId = this.getAttribute('id');
+
+            // Добавляем ID в текущий GET-запрос
+            const currentUrl = new URL(window.location.href);
+            currentUrl.searchParams.set('id', rowId);
+
+            // Перенаправляем пользователя на обновлённый URL
+            window.location.href = currentUrl.toString();
+        });
+    });
 </script>
 </html>

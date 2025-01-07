@@ -102,9 +102,9 @@ def generateHTMLTable(table_name):
         rows = cursor.fetchall()
 
     for row in rows:
-        HTMLRow = '<tr>'
+        HTMLRow = f'<tr id={row[0]}>'
         for column in row:
-            table += f'<td>{column}</td>'
+            HTMLRow += f'<td>{column}</td>'
         HTMLRow += '</tr>'
         table += HTMLRow
 
