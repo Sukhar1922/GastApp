@@ -1,8 +1,9 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django import forms
 from django.db import connection
 from django.utils.safestring import mark_safe
+from urllib.parse import urlencode
 
 dictTables = {
     'apartments' : 'Жильё',
@@ -253,6 +254,9 @@ def changePage(request):
             query = f'UPDATE {table} SET {", ".join(lstValues)}  WHERE id = {id}'
             print(query)
             cursor.execute(query)
+
+        query_params = urlencode({'table': table, 'id': id})
+        return redirect(f"{request.path}?{query_params}")
 
     tableList = generateTableList()
     renderPage = render(request, 'main/change.html', {'tablelistGen': mark_safe(tableList),
