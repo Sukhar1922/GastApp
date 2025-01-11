@@ -158,6 +158,7 @@ header {
     max-height: 500px; /* Ограничиваем высоту таблицы */
     border: 1px solid #ddd; /* Граница вокруг таблицы */
     position: relative;
+    margin-bottom: 10px;
 }
 
 /* Стили для таблицы */

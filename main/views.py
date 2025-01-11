@@ -38,6 +38,14 @@ def GETTable(request):
     return table_name
 
 
+def GETId(request):
+    id = request.GET.get('id')
+    if id is not None:
+        print(f'id: {id}')
+        return id
+    return None
+
+
 def generateTableList():
     tableList = ''
     for table in dictTables:
@@ -73,6 +81,54 @@ def generateForm(table_name):
         column = f'''
             <p><label for=\"{key}\">{title}</label>
             <input type=\"text\" name=\"{key}\" maxlength=\"{length}\"></p>
+        '''
+        form += column
+    return mark_safe(form)
+
+
+def generateFilledForm(table_name, id):
+    form = ""
+    with connection.cursor() as cursor:
+        query = f"""
+        SELECT COLUMN_NAME, DATA_TYPE, CHARACTER_MAXIMUM_LENGTH
+        FROM INFORMATION_SCHEMA.COLUMNS
+        WHERE TABLE_NAME = '{table_name}'
+        """
+        cursor.execute(query)
+        columns = cursor.fetchall()
+
+        query = f"""
+        SELECT *
+        FROM {table_name}
+        WHERE id = {id}
+        """
+        cursor.execute(query)
+        row = cursor.fetchall()
+
+        print(f'columns: {columns}')
+
+    form += f'<input type=\"hidden\" name=\"table\" value=\"{table_name}\">'
+    form += f'<input type=\"hidden\" name=\"id\" value=\"{id}\">'
+
+    for i in range(len(columns)): # key, type, length
+        key = columns[i][0]
+        type = columns[i][1]
+        length = columns[i][2]
+        value = row[0][i]
+
+        if key == 'id':
+            continue
+        if key in dictLabels:
+            title = dictLabels[key]
+        else:
+            title = key
+
+        if value is None:
+            value = ''
+
+        column = f'''
+            <p><label for=\"{key}\">{title}</label>
+            <input type=\"text\" name=\"{key}\" maxlength=\"{length}\" value=\"{value}\"></p>
         '''
         form += column
     return mark_safe(form)
@@ -157,7 +213,53 @@ def viewPage(request):
 
 
 def changePage(request):
-    return render(request, 'main/change.html')
+    table = ''
+    HTMLTable = ''
+    form = ''
+
+    if request.method == "GET":
+        table = GETTable(request)
+        id = GETId(request)
+        if table is not None:
+            HTMLTable = generateHTMLTable(table)
+
+            if id is not None:
+                form = generateFilledForm(table, id)
+
+    elif request.method == "POST":
+        keys = []
+        values = []
+        for key, value in request.POST.items():
+            if key == 'table':
+                table = value
+                continue
+            if key == 'id':
+                id = value
+                continue
+
+            if key == 'csrfmiddlewaretoken':
+                continue
+
+            if value == '':
+                values.append('NULL')
+            else:
+                values.append(f"\'{value}\'")
+
+            keys.append(key)
+        with connection.cursor() as cursor:
+            lstValues = []
+            for i in range(len(keys)):
+                lstValues.append(f'{keys[i]} = {values[i]}')
+            query = f'UPDATE {table} SET {", ".join(lstValues)}  WHERE id = {id}'
+            print(query)
+            cursor.execute(query)
+
+    tableList = generateTableList()
+    renderPage = render(request, 'main/change.html', {'tablelistGen': mark_safe(tableList),
+                                                      'table': mark_safe(HTMLTable),
+                                                      'form': mark_safe(form)})
+
+    return renderPage
 
 
 def addPage(request):
