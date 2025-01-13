@@ -1,7 +1,27 @@
 {% extends 'main/layout.html' %}
 
-{% block title %} ПРИВЕТ! {% endblock %}
+{% block title %} Удаление {% endblock %}
 
 {% block content %}
     <p>Удаление</p>
+    <div class="table-container">
+        <table>
+          {{ table }}
+        </table>
+    </div>
 {% endblock %}
+
+{% block form %}
+    <form class="form-container" method="post">
+        <p class="form-header">Удалить?</p>
+        <div class="form-fields">
+            {% csrf_token %}
+            {{ form }}
+        </div>
+        <button class="form-button" type="submit">Удалить</button>
+    </form>
+{% endblock %}
+
+{% block tablelist %}
+    {{ tablelistGen }}
+{% endblock%}

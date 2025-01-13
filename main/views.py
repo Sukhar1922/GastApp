@@ -135,6 +135,16 @@ def generateFilledForm(table_name, id):
     return mark_safe(form)
 
 
+def generateFormToDelete(table_name, id):
+    form = ''
+
+    form += f'<input type=\"hidden\" name=\"table\" value=\"{table_name}\">'
+    form += f'<input type=\"hidden\" name=\"id\" value=\"{id}\">'
+
+    form += f'<p>Точно удалить из таблицы {dictTables[table_name]} запись с id {id}?</p>'
+    return form
+
+
 def generateHTMLTable(table_name):
     table = ""
     with connection.cursor() as cursor:
@@ -305,4 +315,41 @@ def addPage(request):
 
 
 def deletePage(request):
-    return render(request, 'main/delete.html')
+    table = ''
+    HTMLTable = ''
+    form = ''
+
+    if request.method == "GET":
+        table = GETTable(request)
+        id = GETId(request)
+        if table is not None:
+            HTMLTable = generateHTMLTable(table)
+
+            if id is not None:
+                form = generateFormToDelete(table, id)
+
+    elif request.method == "POST":
+        id = ''
+        table = ''
+        for key, value in request.POST.items():
+            if key == 'table':
+                table = value
+                continue
+            if key == 'id':
+                id = value
+                continue
+            if key == 'csrfmiddlewaretoken':
+                continue
+        if id != '':
+            print(f'delete {table} {id}')
+
+        query_params = urlencode({'table': table, 'id': id})
+        return redirect(f"{request.path}?{query_params}")
+
+
+    tableList = generateTableList()
+    renderPage = render(request, 'main/delete.html', {'form': mark_safe(form),
+                                                      'tablelistGen': mark_safe(tableList),
+                                                      'table': mark_safe(HTMLTable)})
+
+    return renderPage
