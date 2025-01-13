@@ -51,13 +51,16 @@
         row.addEventListener('click', function () {
             // Получаем ID строки из атрибута data-id
             const rowId = this.getAttribute('id');
+            console.log(rowId);
 
-            // Добавляем ID в текущий GET-запрос
-            const currentUrl = new URL(window.location.href);
-            currentUrl.searchParams.set('id', rowId);
+            if (rowId != null){
+                // Добавляем ID в текущий GET-запрос
+                const currentUrl = new URL(window.location.href);
+                currentUrl.searchParams.set('id', rowId);
 
-            // Перенаправляем пользователя на обновлённый URL
-            window.location.href = currentUrl.toString();
+                // Перенаправляем пользователя на обновлённый URL
+                window.location.href = currentUrl.toString();
+            };
         });
     });
 </script>

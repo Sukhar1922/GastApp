@@ -6,23 +6,34 @@ from django.utils.safestring import mark_safe
 from urllib.parse import urlencode
 
 dictTables = {
-    'apartments' : 'Жильё',
-    'gastarbiters' : 'Гастарбайтеры',
-    'Gas_Tools' : 'Гастарбайтеры-инструменты',
-    'owners' : 'Хозяева квартир',
-    'tools' : 'Инструменты',
-    'workplaces' : 'Калым'
+    'apartments': 'Жильё',
+    'gastarbiters': 'Гастарбайтеры',
+    'Gas_Tools': 'Гастарбайтеры-инструменты',
+    'owners': 'Хозяева квартир',
+    'tools': 'Инструменты',
+    'workplaces': 'Места работы'
 }
 
 dictLabels = {
-    'f_name' : 'Фамилия',
-    'i_name' : 'Имя',
-    'o_name' : 'Отчество',
-    'pasport_ser' : 'Серия паспорта',
-    'pasport_num' : 'Номер серии',
-    'salary' : 'Зарплата',
-    'id_workplace' : 'id рабочего места',
-    'id_apartment' : 'id квартиры проживания'
+    'f_name': 'Фамилия',
+    'i_name': 'Имя',
+    'o_name': 'Отчество',
+    'pasport_ser': 'Серия паспорта',
+    'pasport_num': 'Номер серии',
+    'salary': 'Зарплата',
+    'id_workplace': 'id рабочего места',
+    'id_apartment': 'id квартиры проживания',
+    'adress': 'Адрес',
+    'num_of_rooms': 'Количество комнат',
+    'id_owner': 'id владельца',
+    'id_gas': 'id гастарбайтера',
+    'id_tool': 'id инструмента',
+    'phone_num': 'Номер телефона',
+    'email': 'Электронная почта',
+    'tooltype': 'Тип инструмента',
+    'disrepair': 'Состояние',
+    'worktype': 'Задание',
+    'employer': 'Наниматель',
 }
 
 
@@ -202,7 +213,9 @@ def testPage(request):
             query = f'INSERT INTO {table} ({", ".join(keys)}) VALUES ({", ".join(values)})'
             print(query)
             cursor.execute(query)
-        return render(request, 'main/test.html', {'form': mark_safe(form)})
+
+        query_params = urlencode({'table': table, 'id': id})
+        return redirect(f"{request.path}?{query_params}")
     return render(request, 'main/test.html', {'form': mark_safe(form)})
 
 
@@ -218,7 +231,6 @@ def viewPage(request):
 
     tableList = generateTableList()
     renderPage = render(request, 'main/view.html', {'tablelistGen': mark_safe(tableList), 'table': mark_safe(HTMLTable)})
-
 
     return renderPage
 
@@ -278,14 +290,12 @@ def changePage(request):
 
 def addPage(request):
     table = ''
+    form = ''
 
     if request.method == "GET":
         table = GETTable(request)
-
-    form = generateForm(table)
-    tableList = generateTableList()
-    renderPage = render(request, 'main/add.html', {'form': mark_safe(form), 'tablelistGen': mark_safe(tableList)})
-
+        if table is not None:
+            form = generateForm(table)
 
     if request.method == "POST":
         keys = []
@@ -310,7 +320,13 @@ def addPage(request):
             query = f'INSERT INTO {table} ({", ".join(keys)}) VALUES ({", ".join(values)})'
             print(query)
             cursor.execute(query)
-        return renderPage
+
+        query_params = urlencode({'table': table})
+        return redirect(f"{request.path}?{query_params}")
+
+    tableList = generateTableList()
+    renderPage = render(request, 'main/add.html', {'form': mark_safe(form), 'tablelistGen': mark_safe(tableList)})
+
     return renderPage
 
 

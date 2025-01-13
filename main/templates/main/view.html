@@ -4,11 +4,15 @@
 
 {% block content %}
     <p>Просмотр</p>
-    <div class="table-container">
-        <table>
-          {{ table }}
-        </table>
-    </div>
+    {% if table %}
+        <div class="table-container">
+            <table>
+              {{ table }}
+            </table>
+        </div>
+    {% else %}
+        <p>Выберите таблицу</p>
+    {% endif %}
 {% endblock %}
 
 {% block tablelist %}
