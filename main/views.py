@@ -342,6 +342,10 @@ def deletePage(request):
                 continue
         if id != '':
             print(f'delete {table} {id}')
+            with connection.cursor() as cursor:
+                query = f'DELETE FROM {table} WHERE id = {id}'
+                print(query)
+                cursor.execute(query)
 
         query_params = urlencode({'table': table, 'id': id})
         return redirect(f"{request.path}?{query_params}")
