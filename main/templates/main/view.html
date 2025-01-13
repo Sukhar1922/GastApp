@@ -1,7 +1,21 @@
 {% extends 'main/layout.html' %}
 
-{% block title %} ПРИВЕТ! {% endblock %}
+{% block title %} Просмотр таблиц {% endblock %}
 
 {% block content %}
     <p>Просмотр</p>
+    {% if table %}
+        <div class="table-container">
+            <table>
+              {{ table }}
+            </table>
+        </div>
+    {% else %}
+        <p>Выберите таблицу</p>
+    {% endif %}
 {% endblock %}
+
+{% block tablelist %}
+    {{ tablelistGen }}
+{% endblock%}
+
